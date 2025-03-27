@@ -3,7 +3,9 @@ package dev.java10x.CadastroDeNinjas.Ninjas;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class NinjaService {
@@ -16,18 +18,18 @@ public class NinjaService {
         this.ninjaMapper = ninjaMapper;
     }
 
-    // Listar todos os meus Ninjas
-    public List<NinjaModel> listarNinjas(){
-        return ninjaRepository.findAll();
+    public List<NinjaDTO> listarNinjas(){
+        List<NinjaModel> ninjas = ninjaRepository.findAll();
+        return ninjas.stream()
+                .map(ninjaMapper::map)
+                .collect(Collectors.toList());
     }
 
-    // Listar todos os meus Ninjas Por ID
-    public NinjaModel listarNinjasPorId(Long id){
+    public NinjaDTO listarNinjasPorId(Long id){
         Optional<NinjaModel> ninjaPorId = ninjaRepository.findById(id);
-        return ninjaPorId.orElse(null);
+        return ninjaPorId.map(ninjaMapper::map).orElse(null);
     }
 
-    // Criar um novo Ninja
     public NinjaDTO criarNinja(NinjaDTO ninjaDTO){
         NinjaModel ninja = ninjaMapper.map(ninjaDTO);
         ninja = ninjaRepository.save(ninja);
@@ -35,16 +37,36 @@ public class NinjaService {
     }
 
 
-    // Deletar o ninja - tem que ser um método void
+
     public void deletarNinjaPorId(Long id){
         ninjaRepository.deleteById(id);
     }
 
     //Atualizar o Ninja
-    public NinjaModel atualizarNinja(Long id, NinjaModel ninjaAtualizado){
-        if(ninjaRepository.existsById(id)){
-            ninjaAtualizado.setId(id);
-            return ninjaRepository.save(ninjaAtualizado);
+    public NinjaDTO atualizarNinja(Long id, NinjaDTO ninjaDTO){
+        Optional<NinjaModel> ninjaExistenteOptional = ninjaRepository.findById(id);
+
+        if (ninjaExistenteOptional.isPresent()) {
+            NinjaModel ninjaExistente = ninjaExistenteOptional.get();
+
+            if (ninjaDTO.getNome() != null) {
+                ninjaExistente.setNome(ninjaDTO.getNome());
+            }
+            if (ninjaDTO.getRank() != null) {
+                ninjaExistente.setRank(ninjaDTO.getRank());
+            }
+            if (Objects.nonNull(ninjaDTO.getIdade())) {
+                ninjaExistente.setIdade(ninjaDTO.getIdade());
+            }
+            if(ninjaDTO.getEmail() != null){
+                ninjaExistente.setEmail(ninjaDTO.getEmail());
+            }
+            if(ninjaDTO.getImgURL() != null){
+                ninjaExistente.setImgURL(ninjaDTO.getImgURL());
+            }
+
+            NinjaModel ninjaSalvo = ninjaRepository.save(ninjaExistente);
+            return ninjaMapper.map(ninjaSalvo);
         }
         return null;
     }
