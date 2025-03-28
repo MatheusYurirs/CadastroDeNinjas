@@ -1,5 +1,6 @@
 package dev.java10x.CadastroDeNinjas.Ninjas;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.java10x.CadastroDeNinjas.Missoes.MissoesModel;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,7 +39,8 @@ public class NinjaModel {
 
     //@ManyToOne Um ninja tem uma única missão
     @ManyToOne
-    @JoinColumn(name = "missoes_id") //Foreing Key ou Chave Estrangeira
+    @JoinColumn(name = "missoes_id")
+    @JsonIgnore//Foreing Key ou Chave Estrangeira
     private MissoesModel missoes;
 
 }
