@@ -65,6 +65,11 @@ public class NinjaService {
                 ninjaExistente.setImgURL(ninjaDTO.getImgURL());
             }
 
+            if(ninjaDTO.getMissoes() != null){
+                ninjaExistente.setMissoes(ninjaDTO.getMissoes());
+            }
+
+
             NinjaModel ninjaSalvo = ninjaRepository.save(ninjaExistente);
             return ninjaMapper.map(ninjaSalvo);
         }
