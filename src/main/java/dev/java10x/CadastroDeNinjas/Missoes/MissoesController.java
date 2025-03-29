@@ -1,5 +1,7 @@
 package dev.java10x.CadastroDeNinjas.Missoes;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,28 +17,45 @@ public class MissoesController {
         this.missoesService = missoesService;
     }
 
-    //GET -- Mandar uma requisição para mostrar as missoes
+
     @GetMapping("/listar")
-    public List<MissoesDTO> listarMissao(){
-        return missoesService.listarMissoes();
+    public ResponseEntity<List<MissoesDTO>> listarMissao(){
+        List<MissoesDTO> missoes =  missoesService.listarMissoes();
+        return ResponseEntity.ok(missoes);
     }
-    //POST -- Mandar uma requisição para criar as missoes
+
     @PostMapping("/criar")
-    public MissoesDTO criarMissao(@RequestBody MissoesDTO missoes){
-        return missoesService.criarMissoes(missoes);
+    public ResponseEntity<String> criarMissao(@RequestBody MissoesDTO missoes){
+        MissoesDTO novaMissao = missoesService.criarMissoes(missoes);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("Nova missão criada com Sucesso");
     }
 
-    //PUT -- Mandar uma requisição para alterar as missoes
+
     @PatchMapping ("/alterar/{id}")
-    public MissoesDTO alterarMissao(@PathVariable Long id,@RequestBody MissoesDTO missoesAtualizada){
-        return missoesService.atualizarMissao(id, missoesAtualizada);
+    public ResponseEntity<?> alterarMissao(@PathVariable Long id,@RequestBody MissoesDTO missoesAtualizada){
+        MissoesDTO missao = missoesService.atualizarMissao(id, missoesAtualizada);
+        if(missao != null){
+            return ResponseEntity.ok(missao);
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Missao de Id: " + id + " não existe nos nossos registros.");
+        }
     }
 
-    //Delete -- Mandar uma requisição para deletar as missoes
+
     @DeleteMapping("/deletar/{id}")
-    public void deletarMissao(@PathVariable Long id)
+    public ResponseEntity<String> deletarMissao(@PathVariable Long id)
     {
-        missoesService.deletarMissoesPorId(id);
+        if(missoesService.listarMissoesPorId(id) != null){
+            missoesService.deletarMissoesPorId(id);
+            return ResponseEntity.ok("Ninja com id " + id + " deletado com sucesso.");
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Ninja de Id: " + id + " não existe nos nossos registros.");
+        }
     }
 
 
