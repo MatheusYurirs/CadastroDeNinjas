@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Detalhes do Ninja</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <style>
+        /* Estilo para a página de detalhes do ninja */
+       .details-container {
+           width: 60%;
+           margin: 30px auto;
+           padding: 20px;
+           background: #fff;
+           border-radius: 10px;
+           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+           text-align: center;
+       }
+
+       h1, h2, h3 {
+           color: #2c3e50;
+           text-align: center;
+       }
+
+       img {
+           border-radius: 50%;
+           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+           display: block;
+           margin: 0 auto;
+       }
+
+       p {
+           font-size: 16px;
+           color: #34495e;
+           margin: 10px 0;
+       }
+
+       /* Estilo para a tabela de missões */
+       table {
+           width: 80%;
+           border-collapse: collapse;
+           margin: 20px auto;
+           text-align: center;
+       }
+
+       thead {
+           background: #2c3e50;
+           color: white;
+       }
+
+       thead th, tbody td {
+           padding: 12px;
+           border-bottom: 1px solid #ddd;
+       }
+
+       tbody tr:nth-child(even) {
+           background: #f8f9fa;
+       }
+
+       tbody tr:hover {
+           background: #dfe6e9;
+       }
+
+       /* Estilo para o link de voltar */
+       .back-link {
+           display: block;
+           margin: 20px auto;
+           padding: 10px 15px;
+           background: #3498db;
+           color: white;
+           border-radius: 5px;
+           text-decoration: none;
+           font-weight: bold;
+           text-align: center;
+           width: 200px;
+           transition: background 0.3s;
+       }
+
+       .back-link:hover {
+           background: #2980b9;
+       }
+    </style>
+</head>
+<body>
+<h1>Detalhes do Ninja</h1>
+<div>
+    <img th:src="${ninja.imgURL}" alt="${ninja.nome}" width="200" />
+    <h2 th:text="${ninja.nome}"></h2>
+    <p><strong>Email:</strong> <span th:text="${ninja.email}"></span></p>
+    <p><strong>Idade:</strong> <span th:text="${ninja.idade}"></span></p>
+    <p><strong>Rank:</strong> <span th:text="${ninja.rank}"></span></p>
+
+    <h3>Missões:</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Dificuldade</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="missao : ${ninja.missoes}">
+            <td th:text="${missao.titulo}"></td>
+            <td th:text="${missao.dificuldade}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<a href="/ninjas/ui/listar">Voltar para a lista de ninjas</a>
+</body>
+</html>
